@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ability-templates>
+    <abilityTemplate>
+        <conditions>FOR 19</conditions>
+        <description>Lorsque le PJ fait 18 sur sont dé, il peut mettre une grosse claque au MJ.</description>
+        <name>Attaque en puissance</name>
+    </abilityTemplate>
+    <abilityTemplate>
+        <conditions>OK</conditions>
+        <description>ON va voir si ça focntionne en déploy</description>
+        <name>Autre DON !</name>
+    </abilityTemplate>
+    <abilityTemplate>
+        <conditions>Test</conditions>
+        <description>Test</description>
+        <name>Nom 3</name>
+    </abilityTemplate>
+    <abilityTemplate>
+        <conditions>Test</conditions>
+        <description>Test</description>
+        <name>Nom 4</name>
+    </abilityTemplate>
+</ability-templates>

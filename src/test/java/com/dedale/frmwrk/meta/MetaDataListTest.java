@@ -1,11 +1,9 @@
 package com.dedale.frmwrk.meta;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
