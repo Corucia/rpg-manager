@@ -3,20 +3,20 @@ package com.dedale.business.ability.ihm.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.dedale.RpgManagerBootstrap;
 import com.dedale.business.ability.model.AbilityTemplate;
+import com.dedale.business.ability.model.AbilityTemplateViewBean;
 import com.dedale.frmwrk.model.dao.XMLMapper;
 import com.dedale.frmwrk.view.controller.AbstractController;
 import com.dedale.frmwrk.view.controller.ControllerException;
 
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,9 +35,9 @@ public class AbilityTemplateListView extends AbstractController<AnchorPane> {
     private static final String DATA_FILE_NAME = "data/abilityTemplateList.xml";
     
     @FXML
-    private TableView<AbilityTemplate> abilityTemplateList;
+    private TableView<AbilityTemplateViewBean> abilityTemplateList;
     @FXML
-    private TableColumn<AbilityTemplate, String> nameColumn;
+    private TableColumn<AbilityTemplateViewBean, String> nameColumn;
     
     @FXML
     private Label nameLabel;
@@ -68,7 +68,7 @@ public class AbilityTemplateListView extends AbstractController<AnchorPane> {
     @Override
     protected void postInitialize() throws ControllerException {
         loadAbilityTemplateList();
-        nameColumn.setCellValueFactory(cellData -> toViewProperty(cellData.getValue().getName()));
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().name());
         
         abilityTemplateList.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showTechNodeTemplateDetails(newValue));
@@ -77,9 +77,12 @@ public class AbilityTemplateListView extends AbstractController<AnchorPane> {
     private void loadAbilityTemplateList() throws ControllerException {
         try {
             AbilityTemplateListWrapper imported = getMapper().importFrom(AbilityTemplateListWrapper.class, getResourceFile());
+            Collection<AbilityTemplateViewBean> abilityTemplates = imported.getAbilityTemplateList()
+                    .stream()
+                    .map(AbilityTemplateViewBean::new)
+                    .collect(Collectors.toList());
             
-            Collection<AbilityTemplate> abilityTemplates = imported.getAbilityTemplateList();
-            ObservableList<AbilityTemplate> observableAbilityTemplateList = FXCollections.observableArrayList(abilityTemplates);
+            ObservableList<AbilityTemplateViewBean> observableAbilityTemplateList = FXCollections.observableArrayList(abilityTemplates);
             this.abilityTemplateList.setItems(observableAbilityTemplateList);
         } catch (JAXBException | IOException e) {
             LOGGER.error("Impossible de charger la liste des capacités.", e);
@@ -107,10 +110,6 @@ public class AbilityTemplateListView extends AbstractController<AnchorPane> {
             conditionsLabel.setText("");
             descriptionLabel.setText("");
         }
-    }
-    
-    private Property<String> toViewProperty(String value) {
-        return new SimpleStringProperty(value);
     }
     
     private void refresh() {
