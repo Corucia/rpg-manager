@@ -3,8 +3,6 @@ package com.dedale.business.ability.ihm.view;
 import java.util.function.Supplier;
 
 import com.dedale.business.ability.model.AbilityTemplate;
-import com.dedale.frmwrk.action.DialogAction;
-import com.dedale.frmwrk.action.DialogUpdateAction;
 import com.dedale.frmwrk.view.controller.AbstractController;
 import com.dedale.frmwrk.view.controller.ControllerException;
 
@@ -18,10 +16,9 @@ import javafx.stage.Stage;
 
 /**
  * Formulaire de mise à jour d'un élément d'arbre technologique
- * 
  * @back : {@link AbilityTemplateListView}
  */
-public class AbilityTemplateUpdateForm extends AbstractController<AnchorPane> {
+public class AbilityTemplateCreateForm extends AbstractController<AnchorPane> {
     
     @FXML
     private TextField nameLabel;
@@ -30,10 +27,9 @@ public class AbilityTemplateUpdateForm extends AbstractController<AnchorPane> {
     @FXML
     private TextArea descriptionLabel;
     
-    private Stage dialogStage;
-    private DialogUpdateAction<AbilityTemplate> validateUpdateAction = this::updateAbilityTemplate;
     private DialogAction validateAction;
-    private DialogAction cancelAction = DialogAction.closeDialog(() -> dialogStage);
+    private DialogAction cancelAction;
+    private Stage dialogStage;
     
     @FXML
     private void validate() throws ControllerException {
@@ -45,7 +41,7 @@ public class AbilityTemplateUpdateForm extends AbstractController<AnchorPane> {
         cancelAction.execute();
     }
     
-    private void showAbilityTemplate(AbilityTemplate abilityTemplate) {
+    private void showTechNodeTemplateDetails(AbilityTemplate abilityTemplate) {
         if (abilityTemplate != null) {
             nameLabel.setText(abilityTemplate.getName());
             conditionsLabel.setText(abilityTemplate.getConditions());
@@ -70,10 +66,21 @@ public class AbilityTemplateUpdateForm extends AbstractController<AnchorPane> {
         }
         
         AbilityTemplate abilityTemplate = updateItemProvider.get();
-        showAbilityTemplate(abilityTemplate);
-        
-        validateAction = validateUpdateAction.action(updateItemProvider).andThen(viewCallback).thenClose(dialogStage);
+        showTechNodeTemplateDetails(abilityTemplate);
+        validateAction = () -> {
+            updateAbilityTemplate(abilityTemplate);
+            viewCallback.execute();
+            dialogStage.close();
+        };
+        cancelAction = () -> {
+            dialogStage.close();
+        };
         dialogStage.showAndWait();
+    }
+    
+    @FunctionalInterface
+    public static interface DialogAction {
+        void execute() throws ControllerException;
     }
     
     private void updateAbilityTemplate(AbilityTemplate abilityTemplate) {

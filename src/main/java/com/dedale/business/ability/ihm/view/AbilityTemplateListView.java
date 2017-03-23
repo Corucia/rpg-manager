@@ -3,7 +3,6 @@ package com.dedale.business.ability.ihm.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
@@ -70,14 +69,17 @@ public class AbilityTemplateListView extends AbstractController<AnchorPane> {
         loadAbilityTemplateList();
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().name());
         
-        abilityTemplateList.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> showTechNodeTemplateDetails(newValue));
+        abilityTemplateList
+                .getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> showAbilityTemplate(newValue));
     }
     
     private void loadAbilityTemplateList() throws ControllerException {
         try {
             AbilityTemplateListWrapper imported = getMapper().importFrom(AbilityTemplateListWrapper.class, getResourceFile());
-            Collection<AbilityTemplateViewBean> abilityTemplates = imported.getAbilityTemplateList()
+            Collection<AbilityTemplateViewBean> abilityTemplates = imported
+                    .getAbilityTemplateList()
                     .stream()
                     .map(AbilityTemplateViewBean::new)
                     .collect(Collectors.toList());
@@ -100,7 +102,7 @@ public class AbilityTemplateListView extends AbstractController<AnchorPane> {
         }
     }
     
-    private void showTechNodeTemplateDetails(AbilityTemplate abilityTemplate) {
+    private void showAbilityTemplate(AbilityTemplate abilityTemplate) {
         if (abilityTemplate != null) {
             nameLabel.setText(abilityTemplate.getName());
             conditionsLabel.setText(abilityTemplate.getConditions());
@@ -113,7 +115,7 @@ public class AbilityTemplateListView extends AbstractController<AnchorPane> {
     }
     
     private void refresh() {
-        showTechNodeTemplateDetails(abilityTemplateList.getSelectionModel().getSelectedItem());
+        //        showAbilityTemplate(abilityTemplateList.getSelectionModel().getSelectedItem());
     }
     
     private File getResourceFile() throws IOException {
